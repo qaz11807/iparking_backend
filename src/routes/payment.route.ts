@@ -1,4 +1,4 @@
-import Route from './route';
+import {BaseRoute} from './route';
 import passport from 'passport';
 
 /** middleware imported */
@@ -8,7 +8,7 @@ import * as PayApi from '../middleware/payment-middleware';
 import * as PayRequest from '../requests/pay-request';
 
 /** Class representing Order Route. */
-class PayRoute extends Route {
+class PayRoute extends BaseRoute {
     /**
      * Create a routes.
      */
@@ -27,4 +27,4 @@ class PayRoute extends Route {
     }
 }
 
-export default PayRoute;
+export {PayRoute};

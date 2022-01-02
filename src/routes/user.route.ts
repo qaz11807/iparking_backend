@@ -1,4 +1,4 @@
-import Route from './route';
+import {AuthRoute} from './route';
 
 /** middleware imported */
 import * as UserApi from '../middleware/user-middleware';
@@ -7,23 +7,22 @@ import * as UserApi from '../middleware/user-middleware';
 import * as UserRequest from '../requests/user-request';
 
 /** Class representing Order Route. */
-class UserRoute extends Route {
+class UserRoute extends AuthRoute {
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    constructor() {
-        super();
-        this.prefix = '/user';
-        this.auth = true;
+    constructor(basePrefix?: string) {
+        super(basePrefix);
+        this.prefix += '/user';
         this.setRoutes();
     }
     /**
      * Set the router's routes and middleware.
      */
     protected setRoutes() {
-        /** User */
         this.router.put('/token', UserRequest.user.updateDeviceToken, UserApi.user.updateDeviceToken);
     }
 }
 
-export default UserRoute;
+export {UserRoute};

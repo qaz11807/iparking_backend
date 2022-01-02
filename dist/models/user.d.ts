@@ -1,4 +1,4 @@
-import {Sequelize, ModelStatic, Model} from 'sequelize';
+import { Sequelize, ModelStatic, Model } from 'sequelize';
 import UserInstance from './interfaces/user-interface';
 interface UserStatic {
     associate?: (model: {

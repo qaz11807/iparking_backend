@@ -1,7 +1,6 @@
-import {Sequelize, ModelStatic, Model} from 'sequelize';
+import { Sequelize, ModelStatic, Model } from 'sequelize';
 import OrderInstance from './interfaces/order-interface';
 interface OrderStatic {
-    createByUserId?: (userId: number, licenseId: number) => void;
     associate?: (model: {
         [key: string]: ModelStatic<Model>;
     }) => void;

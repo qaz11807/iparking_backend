@@ -75,7 +75,7 @@ export const permissionAuth = (req:Request, res:Response, next: NextFunction) =>
     }
 };
 
-export default (req:Request, res:Response) => {
+export const signin = (req:Request, res:Response) => {
     try {
         if (req.user !== undefined) {
             const token = jwt.sign(req.user, secretKey);

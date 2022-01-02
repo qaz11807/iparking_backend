@@ -1,4 +1,4 @@
-import Route from './route';
+import {AdminRoute} from './route';
 
 /** middleware imported */
 import {permissionAuth} from '../middleware/auth-middleware';
@@ -6,16 +6,18 @@ import * as MessageApi from '../middleware/cloud-message-middleware';
 
 /** api request validator */
 import * as MessageRequest from '../requests/cloud-message-request';
+import passport from 'passport';
 
-/** Class representing Order Route. */
-class MessageRoute extends Route {
+/** Class representing Dashboard Simulated Route. */
+class MessageAdminRoute extends AdminRoute {
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    constructor() {
-        super();
-        this.prefix = '/simulate';
-        this.auth = true;
+    constructor(basePrefix?: string) {
+        super(basePrefix);
+        this.prefix += '/simulate';
+        this.preHandlers = [passport.authenticate('token', {session: false})];
         this.setRoutes();
     }
     /**
@@ -28,4 +30,4 @@ class MessageRoute extends Route {
     }
 }
 
-export default MessageRoute;
+export {MessageAdminRoute};

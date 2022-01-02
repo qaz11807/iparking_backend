@@ -1,11 +1,11 @@
-import Route from './route';
-import signin from '../middleware/auth-middleware';
+import {BaseRoute} from './route';
+import {signin} from '../middleware/auth-middleware';
 import register from '../middleware/register-middleware';
 import passport from 'passport';
 import {loginRequest} from '../requests/auth-request';
 import {registerRequest} from '../requests/register-request';
 /** Class representing Auth Route. */
-class AuthRoute extends Route {
+class AuthRouter extends BaseRoute {
     /**
      * Create a routes.
      */
@@ -23,4 +23,4 @@ class AuthRoute extends Route {
     }
 }
 
-export default AuthRoute;
+export default AuthRouter;

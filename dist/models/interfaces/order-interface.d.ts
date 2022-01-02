@@ -1,8 +1,11 @@
-import {Model, Optional} from 'sequelize';
+import { BelongsToGetAssociationMixin, Model, Optional } from 'sequelize';
+import UserInstance from './user-interface';
+import PlateInstance from './plate-interface';
 export declare enum Status {
-    pending = 'pending',
-    enter = 'entrance',
-    exit = 'exit'
+    pending = "pending",
+    enter = "enter",
+    exit = "exit",
+    done = "done"
 }
 export declare const StatusNames: string[];
 interface OrderAttributes {
@@ -10,13 +13,14 @@ interface OrderAttributes {
     enterTime: Date;
     exitTime?: Date;
     status: Status;
-    userId?: number;
-    billId?: number;
-    licenseId: number;
+    tradeAmount?: number;
 }
 interface OrderCreationAttributes extends Optional<OrderAttributes, 'id'> {
 }
-/** as */
 export default interface OrderInstance extends Model<OrderAttributes, OrderCreationAttributes>, OrderAttributes {
-};;;;;;;;;;;;;;;;;;;;
+    getUser: BelongsToGetAssociationMixin<UserInstance>;
+    getPlate: BelongsToGetAssociationMixin<PlateInstance>;
+    user: UserInstance;
+    plate: PlateInstance;
+}
 export {};

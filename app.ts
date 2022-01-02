@@ -3,7 +3,6 @@ import db from './models';
 import expressWinston from 'express-winston';
 import winston from 'winston';
 import bodyParser from 'body-parser';
-import passport from 'passport';
 import {routers} from './src/routes';
 import {initializeApp, cert} from 'firebase-admin/app';
 
@@ -40,11 +39,7 @@ const startServer = async () => {
         }));
 
         for (const router of routers) {
-            if (router.isAuth()) {
-                app.use(router.getPrefix(), passport.authenticate('token', {session: false}), router.getRouter());
-            } else {
-                app.use(router.getPrefix(), router.getRouter());
-            }
+            app.use(router.getPrefix(), router.getPreHandlers(), router.getRouter());
         }
 
         app.use(expressWinston.errorLogger({
