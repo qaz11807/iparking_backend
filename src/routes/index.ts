@@ -5,8 +5,9 @@ import {PlateRoute, PlatedminRoute} from './plate.route';
 import {UserRoute} from './user.route';
 import {PayRoute} from './payment.route';
 import {MessageAdminRoute} from './cloud-message.route';
+import config from '../../config';
 
-const defaultAdminPrefix = '/dashboard';
+const defaultAdminPrefix = config.defaultAdminPrefix;
 
 export const routers: Array<BaseRoute> = [
     new AuthRouter(),

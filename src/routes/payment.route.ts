@@ -23,7 +23,7 @@ class PayRoute extends BaseRoute {
     protected setRoutes() {
         /** User */
         this.router.post('/callback/:id', PayApi.user.paidResultCallback);
-        this.router.post('/:id', passport.authenticate('token', {session: false}), PayRequest.user.getPayUrl, PayApi.user.getPayUrl);
+        this.router.get('/:id', passport.authenticate('token', {session: false}), PayRequest.user.getPayUrl, PayApi.user.getPayUrl);
     }
 }
 

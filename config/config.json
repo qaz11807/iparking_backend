@@ -8,9 +8,9 @@
   },
   "test": {
     "username": "postgres",
-    "password": null,
-    "database": "database_test",
-    "host": "localhost",
+    "password": "B4H1FQES467VD356$",
+    "database": "pg_test",
+    "host": "iparking-core-server.postgres.database.azure.com",
     "dialect": "pg"
   },
   "production": {

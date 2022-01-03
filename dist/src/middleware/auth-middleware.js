@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.permissionAuth = void 0;
+exports.signin = exports.permissionAuth = void 0;
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var passport_1 = __importDefault(require("passport"));
@@ -138,7 +138,7 @@ var permissionAuth = function (req, res, next) {
     }
 };
 exports.permissionAuth = permissionAuth;
-exports.default = (function (req, res) {
+var signin = function (req, res) {
     try {
         if (req.user !== undefined) {
             var token = jsonwebtoken_1.default.sign(req.user, secretKey);
@@ -148,4 +148,5 @@ exports.default = (function (req, res) {
     catch (error) {
         throw error;
     }
-});
+};
+exports.signin = signin;

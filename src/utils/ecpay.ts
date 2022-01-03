@@ -1,4 +1,6 @@
 import {generateFormatedDate} from './date-helper';
+import config from '../../config';
+
 const Ecpaypayment = require('ecpay-payment');
 
 const create = new Ecpaypayment();
@@ -19,7 +21,7 @@ const initParm = (orderId: number, price: number) => {
         TotalAmount: price.toString(),
         TradeDesc: '這是一筆信用卡繳費測試',
         ItemName: '停車場繳費',
-        ReturnURL: `https://8c4b-111-255-87-170.ngrok.io/pay/callback/${orderId}`,
+        ReturnURL: `${config.url}/pay/callback/${orderId}`,
     };
 };
 

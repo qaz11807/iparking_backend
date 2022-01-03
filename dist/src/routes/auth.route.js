@@ -18,19 +18,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var route_1 = __importDefault(require("./route"));
-var auth_middleware_1 = __importDefault(require("../middleware/auth-middleware"));
+var route_1 = require("./route");
+var auth_middleware_1 = require("../middleware/auth-middleware");
 var register_middleware_1 = __importDefault(require("../middleware/register-middleware"));
 var passport_1 = __importDefault(require("passport"));
 var auth_request_1 = require("../requests/auth-request");
 var register_request_1 = require("../requests/register-request");
 /** Class representing Auth Route. */
-var AuthRoute = /** @class */ (function (_super) {
-    __extends(AuthRoute, _super);
+var AuthRouter = /** @class */ (function (_super) {
+    __extends(AuthRouter, _super);
     /**
      * Create a routes.
      */
-    function AuthRoute() {
+    function AuthRouter() {
         var _this = _super.call(this) || this;
         _this.prefix = '/auth';
         _this.setRoutes();
@@ -39,10 +39,10 @@ var AuthRoute = /** @class */ (function (_super) {
     /**
      * Set the router's routes and middleware.
      */
-    AuthRoute.prototype.setRoutes = function () {
-        this.router.post('/signin', auth_request_1.loginRequest, passport_1.default.authenticate('signin', { session: false }), auth_middleware_1.default);
+    AuthRouter.prototype.setRoutes = function () {
+        this.router.post('/signin', auth_request_1.loginRequest, passport_1.default.authenticate('signin', { session: false }), auth_middleware_1.signin);
         this.router.post('/register', register_request_1.registerRequest, register_middleware_1.default);
     };
-    return AuthRoute;
-}(route_1.default));
-exports.default = AuthRoute;
+    return AuthRouter;
+}(route_1.BaseRoute));
+exports.default = AuthRouter;

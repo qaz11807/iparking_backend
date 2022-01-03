@@ -1,13 +1,14 @@
-import Route from './route';
+import { AuthRoute } from './route';
 /** Class representing Order Route. */
-declare class UserRoute extends Route {
+declare class UserRoute extends AuthRoute {
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    constructor();
+    constructor(basePrefix?: string);
     /**
      * Set the router's routes and middleware.
      */
     protected setRoutes(): void;
 }
-export default UserRoute;
+export { UserRoute };

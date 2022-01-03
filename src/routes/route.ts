@@ -18,6 +18,8 @@ export abstract class BaseRoute {
     constructor(basePrefix?: string) {
         if (basePrefix) {
             this.prefix = basePrefix;
+        } else {
+            this.prefix = '';
         }
     }
     /**

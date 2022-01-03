@@ -1,6 +1,6 @@
-import Route from './route';
+import { BaseRoute } from './route';
 /** Class representing Auth Route. */
-declare class AuthRoute extends Route {
+declare class AuthRouter extends BaseRoute {
     /**
      * Create a routes.
      */
@@ -10,4 +10,4 @@ declare class AuthRoute extends Route {
      */
     protected setRoutes(): void;
 }
-export default AuthRoute;
+export default AuthRouter;

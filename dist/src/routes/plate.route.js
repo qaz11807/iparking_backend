@@ -33,26 +33,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var route_1 = __importDefault(require("./route"));
+exports.PlatedminRoute = exports.PlateRoute = void 0;
+var route_1 = require("./route");
 /** middleware imported */
 var auth_middleware_1 = require("../middleware/auth-middleware");
 var PlateApi = __importStar(require("../middleware/plate-middleware"));
 /** api request validator */
 var PlateRequest = __importStar(require("../requests/plate-request"));
-/** Class representing Order Route. */
+/** Class representing Plate Route. */
 var PlateRoute = /** @class */ (function (_super) {
     __extends(PlateRoute, _super);
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    function PlateRoute() {
-        var _this = _super.call(this) || this;
-        _this.prefix = '/plate';
-        _this.auth = true;
+    function PlateRoute(basePrefix) {
+        var _this = _super.call(this, basePrefix) || this;
+        _this.prefix += '/plate';
         _this.setRoutes();
         return _this;
     }
@@ -65,10 +63,30 @@ var PlateRoute = /** @class */ (function (_super) {
         this.router.post('/', PlateRequest.user.createPlate, PlateApi.user.createPlate);
         this.router.put('/', PlateRequest.user.updatePlate, PlateApi.user.updatePlate);
         this.router.delete('/', PlateRequest.user.deletePlate, PlateApi.user.deletePlate);
-        /** Admin */
-        this.router.get('/admin', auth_middleware_1.permissionAuth, PlateRequest.admin.getAllPlates, PlateApi.admin.getAllPlates);
-        this.router.post('/admin', auth_middleware_1.permissionAuth, PlateRequest.admin.createPlate, PlateApi.admin.createPlate);
     };
     return PlateRoute;
-}(route_1.default));
-exports.default = PlateRoute;
+}(route_1.AuthRoute));
+exports.PlateRoute = PlateRoute;
+/** Class representing Dashboard Plate Route. */
+var PlatedminRoute = /** @class */ (function (_super) {
+    __extends(PlatedminRoute, _super);
+    /**
+     * Create a routes.
+     * @param {string} basePrefix
+     */
+    function PlatedminRoute(basePrefix) {
+        var _this = _super.call(this, basePrefix) || this;
+        _this.prefix += '/plate';
+        _this.setRoutes();
+        return _this;
+    }
+    /**
+     * Set the router's routes and middleware.
+     */
+    PlatedminRoute.prototype.setRoutes = function () {
+        this.router.get('/', auth_middleware_1.permissionAuth, PlateRequest.admin.getAllPlates, PlateApi.admin.getAllPlates);
+        this.router.post('/', auth_middleware_1.permissionAuth, PlateRequest.admin.createPlate, PlateApi.admin.createPlate);
+    };
+    return PlatedminRoute;
+}(route_1.AdminRoute));
+exports.PlatedminRoute = PlatedminRoute;

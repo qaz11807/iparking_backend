@@ -1,11 +1,11 @@
-import {Sequelize, FindOptions} from 'sequelize';
+import {Sequelize, FindOptions, Options} from 'sequelize';
 import fs from 'fs';
 import path from 'path';
+import config from '../config';
 
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
 const basename = path.basename(__filename);
-const sequelize = new Sequelize(config);
+const dbConfig = config.database.ssl ? {...config.database, dialectOptions: {ssl: {require: true}}} : config.database;
+const sequelize = new Sequelize(dbConfig as Options);
 
 const db: any = {};
 

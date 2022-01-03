@@ -8,12 +8,13 @@ import db from '../../models';
 import UserInstance from '../../models/interfaces/user-interface';
 import {Role} from '../../models/interfaces/role';
 
+import config from '../../config';
 import {Request, Response, NextFunction} from 'express';
 
 const JWTStrategy = passportJWT.Strategy;
 const extractJWT = passportJWT.ExtractJwt;
 
-const secretKey = 'kldxnflkdzsfrfa';
+const secretKey = config.jwtSecret;
 
 const User = db.User;
 
@@ -35,10 +36,10 @@ passport.use('signin', new Strategy(async (username, password, done) => {
         if (isValid) {
             done(null, user);
         } else {
-            done(new Error('Compare password failed!'), false);
+            done(null, null);
         }
     } catch (err) {
-        done(err, false);
+        done(err);
     }
 }));
 
@@ -53,7 +54,7 @@ passport.use('token',
             if (user !== null) {
                 done(null, user);
             } else {
-                done(new Error('Can not find user by id !'));
+                done('Can not find user !');
             }
         } catch (err) {
             done(err);
@@ -78,7 +79,7 @@ export const permissionAuth = (req:Request, res:Response, next: NextFunction) =>
 export const signin = (req:Request, res:Response) => {
     try {
         if (req.user !== undefined) {
-            const token = jwt.sign(req.user, secretKey);
+            const token = jwt.sign(req.user, secretKey!);
             res.json(token);
         }
     } catch (error) {

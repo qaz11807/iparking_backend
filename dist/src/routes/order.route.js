@@ -33,13 +33,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var route_1 = __importDefault(require("./route"));
+exports.OrderAdminRoute = exports.OrderRoute = void 0;
+var route_1 = require("./route");
 /** middleware imported */
-var auth_middleware_1 = require("../middleware/auth-middleware");
 var OrderApi = __importStar(require("../middleware/order-middleware"));
 /** api request validator */
 var OrderRequest = __importStar(require("../requests/order-request"));
@@ -48,11 +54,12 @@ var OrderRoute = /** @class */ (function (_super) {
     __extends(OrderRoute, _super);
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    function OrderRoute() {
-        var _this = _super.call(this) || this;
-        _this.prefix = '/order';
-        _this.auth = true;
+    function OrderRoute(basePrefix) {
+        var _this = _super.call(this, basePrefix) || this;
+        _this.prefix += '/order';
+        _this.preHandlers = __spreadArray([], _this.preHandlers, true);
         _this.setRoutes();
         return _this;
     }
@@ -60,15 +67,35 @@ var OrderRoute = /** @class */ (function (_super) {
      * Set the router's routes and middleware.
      */
     OrderRoute.prototype.setRoutes = function () {
-        /** User */
         this.router.get('/', OrderRequest.user.getAllOrders, OrderApi.user.getAllOrders);
         this.router.get('/latest', OrderApi.user.getLatestOrder);
         this.router.put('/:id', OrderRequest.user.replyOrderChoice, OrderApi.user.replyOrderChoice);
         this.router.delete('/:id', OrderRequest.user.deleteOrder, OrderApi.user.deleteOrder);
-        /** Admin */
-        this.router.get('/admin', auth_middleware_1.permissionAuth, OrderRequest.admin.getAllOrders, OrderApi.admin.getAllOrders);
-        this.router.post('/admin', auth_middleware_1.permissionAuth, OrderRequest.admin.createOrder, OrderApi.admin.createOrder);
     };
     return OrderRoute;
-}(route_1.default));
-exports.default = OrderRoute;
+}(route_1.AuthRoute));
+exports.OrderRoute = OrderRoute;
+/** */
+var OrderAdminRoute = /** @class */ (function (_super) {
+    __extends(OrderAdminRoute, _super);
+    /**
+     * Create a routes.
+     * @param {string} basePrefix
+     */
+    function OrderAdminRoute(basePrefix) {
+        var _this = _super.call(this, basePrefix) || this;
+        _this.prefix += '/order';
+        _this.preHandlers = __spreadArray([], _this.preHandlers, true);
+        _this.setRoutes();
+        return _this;
+    }
+    /**
+     * Set the router's routes and middleware.
+     */
+    OrderAdminRoute.prototype.setRoutes = function () {
+        this.router.get('/', OrderRequest.admin.getAllOrders, OrderApi.admin.getAllOrders);
+        this.router.post('/', OrderRequest.admin.createOrder, OrderApi.admin.createOrder);
+    };
+    return OrderAdminRoute;
+}(route_1.AdminRoute));
+exports.OrderAdminRoute = OrderAdminRoute;

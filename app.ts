@@ -1,25 +1,27 @@
 import express from 'express';
-import db from './models';
 import expressWinston from 'express-winston';
 import winston from 'winston';
 import bodyParser from 'body-parser';
+import config from './config';
+import db from './models';
 import {routers} from './src/routes';
 import {initializeApp, cert} from 'firebase-admin/app';
-
-const serviceAccount = require('./config/ipark-dev-6eaf6-firebase-adminsdk-jlepc-21c05de00b.json');
+import swaggerUI from 'swagger-ui-express';
 
 const startServer = async () => {
     try {
         await db.sequelize.sync();
         console.log(`database success sync !!!`);
 
+        const serviceAccount = require(config.firebase.serviceAccountFilePath);
+
         initializeApp({
             credential: cert(serviceAccount),
-            databaseURL: 'https://ipark-dev-6eaf6.firebaseio.com',
+            databaseURL: config.firebase.databaseURL,
         });
 
         const app = express();
-        const port = 3000;
+        const port = config.port;
 
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(bodyParser.json());
@@ -37,6 +39,9 @@ const startServer = async () => {
             msg: 'HTTP {{req.method}} {{req.url}}',
             expressFormat: true,
         }));
+
+        const swaggerDocument = require('./openapi.json');
+        app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
         for (const router of routers) {
             app.use(router.getPrefix(), router.getPreHandlers(), router.getRouter());

@@ -1,0 +1,5 @@
+{
+  "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
+  "appService.defaultWebAppToDeploy": "/subscriptions/cbfefd6b-d1d0-4c91-b2f3-272be6df0445/resourceGroups/iparking/providers/Microsoft.Web/sites/iparking-core",
+  "appService.deploySubpath": "."
+}

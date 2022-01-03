@@ -44,7 +44,6 @@ var models_1 = __importDefault(require("./models"));
 var express_winston_1 = __importDefault(require("express-winston"));
 var winston_1 = __importDefault(require("winston"));
 var body_parser_1 = __importDefault(require("body-parser"));
-var passport_1 = __importDefault(require("passport"));
 var routes_1 = require("./src/routes");
 var app_1 = require("firebase-admin/app");
 var serviceAccount = require('./config/ipark-dev-6eaf6-firebase-adminsdk-jlepc-21c05de00b.json');
@@ -78,12 +77,7 @@ var startServer = function () { return __awaiter(void 0, void 0, void 0, functio
                 }));
                 for (_i = 0, routers_1 = routes_1.routers; _i < routers_1.length; _i++) {
                     router = routers_1[_i];
-                    if (router.isAuth()) {
-                        app.use(router.getPrefix(), passport_1.default.authenticate('token', { session: false }), router.getRouter());
-                    }
-                    else {
-                        app.use(router.getPrefix(), router.getRouter());
-                    }
+                    app.use(router.getPrefix(), router.getPreHandlers(), router.getRouter());
                 }
                 app.use(express_winston_1.default.errorLogger({
                     transports: [

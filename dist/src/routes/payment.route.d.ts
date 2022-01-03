@@ -1,6 +1,6 @@
-import Route from './route';
+import { BaseRoute } from './route';
 /** Class representing Order Route. */
-declare class PayRoute extends Route {
+declare class PayRoute extends BaseRoute {
     /**
      * Create a routes.
      */
@@ -10,4 +10,4 @@ declare class PayRoute extends Route {
      */
     protected setRoutes(): void;
 }
-export default PayRoute;
+export { PayRoute };

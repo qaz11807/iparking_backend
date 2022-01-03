@@ -1,13 +1,14 @@
-import Route from './route';
-/** Class representing Order Route. */
-declare class MessageRoute extends Route {
+import { AdminRoute } from './route';
+/** Class representing Dashboard Simulated Route. */
+declare class MessageAdminRoute extends AdminRoute {
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    constructor();
+    constructor(basePrefix?: string);
     /**
      * Set the router's routes and middleware.
      */
     protected setRoutes(): void;
 }
-export default MessageRoute;
+export { MessageAdminRoute };

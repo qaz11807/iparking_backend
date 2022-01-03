@@ -37,33 +37,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var route_1 = __importDefault(require("./route"));
+exports.MessageAdminRoute = void 0;
+var route_1 = require("./route");
 /** middleware imported */
 var auth_middleware_1 = require("../middleware/auth-middleware");
 var MessageApi = __importStar(require("../middleware/cloud-message-middleware"));
 /** api request validator */
 var MessageRequest = __importStar(require("../requests/cloud-message-request"));
-/** Class representing Order Route. */
-var MessageRoute = /** @class */ (function (_super) {
-    __extends(MessageRoute, _super);
+var passport_1 = __importDefault(require("passport"));
+/** Class representing Dashboard Simulated Route. */
+var MessageAdminRoute = /** @class */ (function (_super) {
+    __extends(MessageAdminRoute, _super);
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    function MessageRoute() {
-        var _this = _super.call(this) || this;
-        _this.prefix = '/simulate';
-        _this.auth = true;
+    function MessageAdminRoute(basePrefix) {
+        var _this = _super.call(this, basePrefix) || this;
+        _this.prefix += '/simulate';
+        _this.preHandlers = [passport_1.default.authenticate('token', { session: false })];
         _this.setRoutes();
         return _this;
     }
     /**
      * Set the router's routes and middleware.
      */
-    MessageRoute.prototype.setRoutes = function () {
+    MessageAdminRoute.prototype.setRoutes = function () {
         /** Admin */
         this.router.post('/enter', auth_middleware_1.permissionAuth, MessageRequest.admin.simulateEnter, MessageApi.admin.simulateEnter);
         this.router.post('/exit', auth_middleware_1.permissionAuth, MessageRequest.admin.simulateExit, MessageApi.admin.simulateExit);
     };
-    return MessageRoute;
-}(route_1.default));
-exports.default = MessageRoute;
+    return MessageAdminRoute;
+}(route_1.AdminRoute));
+exports.MessageAdminRoute = MessageAdminRoute;

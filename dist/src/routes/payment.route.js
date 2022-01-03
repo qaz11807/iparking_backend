@@ -37,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var route_1 = __importDefault(require("./route"));
+exports.PayRoute = void 0;
+var route_1 = require("./route");
 var passport_1 = __importDefault(require("passport"));
 /** middleware imported */
 var PayApi = __importStar(require("../middleware/payment-middleware"));
@@ -64,5 +65,5 @@ var PayRoute = /** @class */ (function (_super) {
         this.router.post('/:id', passport_1.default.authenticate('token', { session: false }), PayRequest.user.getPayUrl, PayApi.user.getPayUrl);
     };
     return PayRoute;
-}(route_1.default));
-exports.default = PayRoute;
+}(route_1.BaseRoute));
+exports.PayRoute = PayRoute;

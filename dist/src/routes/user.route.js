@@ -33,11 +33,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var route_1 = __importDefault(require("./route"));
+exports.UserRoute = void 0;
+var route_1 = require("./route");
 /** middleware imported */
 var UserApi = __importStar(require("../middleware/user-middleware"));
 /** api request validator */
@@ -47,11 +45,11 @@ var UserRoute = /** @class */ (function (_super) {
     __extends(UserRoute, _super);
     /**
      * Create a routes.
+     * @param {string} basePrefix
      */
-    function UserRoute() {
-        var _this = _super.call(this) || this;
-        _this.prefix = '/user';
-        _this.auth = true;
+    function UserRoute(basePrefix) {
+        var _this = _super.call(this, basePrefix) || this;
+        _this.prefix += '/user';
         _this.setRoutes();
         return _this;
     }
@@ -59,9 +57,8 @@ var UserRoute = /** @class */ (function (_super) {
      * Set the router's routes and middleware.
      */
     UserRoute.prototype.setRoutes = function () {
-        /** User */
         this.router.put('/token', UserRequest.user.updateDeviceToken, UserApi.user.updateDeviceToken);
     };
     return UserRoute;
-}(route_1.default));
-exports.default = UserRoute;
+}(route_1.AuthRoute));
+exports.UserRoute = UserRoute;
