@@ -1,12 +1,11 @@
 import {AdminRoute} from './route';
 
 /** middleware imported */
-import {permissionAuth} from '../middleware/auth-middleware';
 import * as MessageApi from '../middleware/cloud-message-middleware';
+import {schemaGetter} from '../middleware/validator-middleware';
 
 /** api request validator */
-import * as MessageRequest from '../requests/cloud-message-request';
-import passport from 'passport';
+import ValidtorDashboard from '../valiadtors/dashboard/cloud-message';
 
 /** Class representing Dashboard Simulated Route. */
 class MessageAdminRoute extends AdminRoute {
@@ -17,7 +16,6 @@ class MessageAdminRoute extends AdminRoute {
     constructor(basePrefix?: string) {
         super(basePrefix);
         this.prefix += '/simulate';
-        this.preHandlers = [passport.authenticate('token', {session: false})];
         this.setRoutes();
     }
     /**
@@ -25,8 +23,8 @@ class MessageAdminRoute extends AdminRoute {
      */
     protected setRoutes() {
         /** Admin */
-        this.router.post('/enter', permissionAuth, MessageRequest.admin.simulateEnter, MessageApi.admin.simulateEnter);
-        this.router.post('/exit', permissionAuth, MessageRequest.admin.simulateExit, MessageApi.admin.simulateExit);
+        this.router.post('/enter', schemaGetter(ValidtorDashboard.simulateEnter), MessageApi.admin.simulateEnter);
+        this.router.post('/exit', schemaGetter(ValidtorDashboard.simulateExit), MessageApi.admin.simulateExit);
     }
 }
 

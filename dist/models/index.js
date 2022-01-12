@@ -18,10 +18,10 @@ exports.paginate = void 0;
 var sequelize_1 = require("sequelize");
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-var env = process.env.NODE_ENV || 'development';
-var config = require(__dirname + '/../config/config.json')[env];
+var config_1 = __importDefault(require("../config"));
 var basename = path_1.default.basename(__filename);
-var sequelize = new sequelize_1.Sequelize(config);
+var dbConfig = config_1.default.database.ssl ? __assign(__assign({}, config_1.default.database), { dialectOptions: { ssl: { require: true } } }) : config_1.default.database;
+var sequelize = new sequelize_1.Sequelize(dbConfig);
 var db = {};
 fs_1.default.readdirSync(__dirname)
     .filter(function (file) {

@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from 'express';
-import {validationResult} from 'express-validator';
+import {ValidationChain, validationResult} from 'express-validator';
 
 export const showApiError = (req: Request, res: Response, next: NextFunction) =>{
     const errors = validationResult(req);
@@ -8,3 +8,5 @@ export const showApiError = (req: Request, res: Response, next: NextFunction) =>
     }
     next();
 };
+
+export const schemaGetter = (schemas: ValidationChain[]) => [...schemas, showApiError];

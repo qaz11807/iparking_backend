@@ -40,15 +40,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var models_1 = __importDefault(require("./models"));
 var express_winston_1 = __importDefault(require("express-winston"));
 var winston_1 = __importDefault(require("winston"));
 var body_parser_1 = __importDefault(require("body-parser"));
+var config_1 = __importDefault(require("./config"));
+var models_1 = __importDefault(require("./models"));
 var routes_1 = require("./src/routes");
 var app_1 = require("firebase-admin/app");
-var serviceAccount = require('./config/ipark-dev-6eaf6-firebase-adminsdk-jlepc-21c05de00b.json');
+var swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 var startServer = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var app, port_1, _i, routers_1, router, err_1;
+    var serviceAccount, app, port_1, swaggerDocument, _i, routers_1, router, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -57,12 +58,13 @@ var startServer = function () { return __awaiter(void 0, void 0, void 0, functio
             case 1:
                 _a.sent();
                 console.log("database success sync !!!");
+                serviceAccount = require(config_1.default.firebase.serviceAccountFilePath);
                 (0, app_1.initializeApp)({
                     credential: (0, app_1.cert)(serviceAccount),
-                    databaseURL: 'https://ipark-dev-6eaf6.firebaseio.com',
+                    databaseURL: config_1.default.firebase.databaseURL,
                 });
                 app = (0, express_1.default)();
-                port_1 = 3000;
+                port_1 = config_1.default.port;
                 app.use(body_parser_1.default.urlencoded({ extended: false }));
                 app.use(body_parser_1.default.json());
                 app.use(express_winston_1.default.logger({
@@ -75,6 +77,8 @@ var startServer = function () { return __awaiter(void 0, void 0, void 0, functio
                     msg: 'HTTP {{req.method}} {{req.url}}',
                     expressFormat: true,
                 }));
+                swaggerDocument = require('./openapi.json');
+                app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
                 for (_i = 0, routers_1 = routes_1.routers; _i < routers_1.length; _i++) {
                     router = routers_1[_i];
                     app.use(router.getPrefix(), router.getPreHandlers(), router.getRouter());

@@ -13,7 +13,7 @@ interface User {
     role:Role;
 }
 
-const checkUserIsExist = async (username:string) : Promise<boolean> => {
+export const checkUserIsExist = async (username:string) : Promise<boolean> => {
     try {
         const user = await User.findOne({where: {username}});
         return user !== null;
@@ -22,13 +22,40 @@ const checkUserIsExist = async (username:string) : Promise<boolean> => {
     }
 };
 
-export default async (req:Request, res:Response) => {
+export const registerUser = async (req:Request, res:Response) => {
     try {
         const payload = req.body;
         const user : User= {
             username: payload.username,
             password: payload.password,
             role: Role.user,
+        };
+        const isExist = await checkUserIsExist(user.username);
+        if (isExist) {
+            res.json({
+                status: ResponseStatus.Failed,
+                error: 'User already exist !',
+            });
+        } else {
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(user.password, salt);
+            await User.create({...user, password: hash});
+            res.json({
+                status: ResponseStatus.Success,
+            });
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const registerUserWithRole = async (req:Request, res:Response) => {
+    try {
+        const payload = req.body;
+        const user : User= {
+            username: payload.username,
+            password: payload.password,
+            role: payload.role,
         };
         const isExist = await checkUserIsExist(user.username);
         if (isExist) {

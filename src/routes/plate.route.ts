@@ -1,11 +1,12 @@
 import {AuthRoute, AdminRoute} from './route';
 
 /** middleware imported */
-import {permissionAuth} from '../middleware/auth-middleware';
 import * as PlateApi from '../middleware/plate-middleware';
+import {schemaGetter} from '../middleware/validator-middleware';
 
 /** api request validator */
-import * as PlateRequest from '../requests/plate-request';
+import ValidatorClient from '../valiadtors/client/plate';
+import ValidatorDashboard from '../valiadtors/dashboard/plate';
 
 /** Class representing Plate Route. */
 class PlateRoute extends AuthRoute {
@@ -23,10 +24,10 @@ class PlateRoute extends AuthRoute {
      */
     protected setRoutes() {
         /** User */
-        this.router.get('/', PlateRequest.user.getAllPlates, PlateApi.user.getAllPlates);
-        this.router.post('/', PlateRequest.user.createPlate, PlateApi.user.createPlate);
-        this.router.put('/', PlateRequest.user.updatePlate, PlateApi.user.updatePlate);
-        this.router.delete('/', PlateRequest.user.deletePlate, PlateApi.user.deletePlate);
+        this.router.get('/', schemaGetter(ValidatorClient.getAll), PlateApi.user.getAllPlates);
+        this.router.post('/', schemaGetter(ValidatorClient.create), PlateApi.user.createPlate);
+        this.router.put('/', schemaGetter(ValidatorClient.update), PlateApi.user.updatePlate);
+        this.router.delete('/', schemaGetter(ValidatorClient.delete), PlateApi.user.deletePlate);
     }
 }
 
@@ -45,8 +46,12 @@ class PlatedminRoute extends AdminRoute {
      * Set the router's routes and middleware.
      */
     protected setRoutes() {
-        this.router.get('/', permissionAuth, PlateRequest.admin.getAllPlates, PlateApi.admin.getAllPlates);
-        this.router.post('/', permissionAuth, PlateRequest.admin.createPlate, PlateApi.admin.createPlate);
+        this.router.get('/count', PlateApi.admin.getCount);
+        this.router.get('/', schemaGetter(ValidatorDashboard.getAll), PlateApi.admin.getAllPlates);
+        this.router.get('/:id', schemaGetter(ValidatorDashboard.get), PlateApi.admin.getPlate);
+        this.router.post('/', schemaGetter(ValidatorDashboard.create), PlateApi.admin.createPlate);
+        this.router.put('/:id', schemaGetter(ValidatorDashboard.update), PlateApi.admin.updatePlate);
+        this.router.delete('/:id', schemaGetter(ValidatorDashboard.delete), PlateApi.admin.deletePlate);
     }
 }
 

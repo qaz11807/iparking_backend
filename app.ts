@@ -7,7 +7,10 @@ import db from './models';
 import {routers} from './src/routes';
 import {initializeApp, cert} from 'firebase-admin/app';
 import swaggerUI from 'swagger-ui-express';
-
+import cors from 'cors';
+import {Server} from 'socket.io';
+import {createServer} from 'http';
+import orderHandler from './src/middleware/socket-middleware';
 const startServer = async () => {
     try {
         await db.sequelize.sync();
@@ -17,7 +20,6 @@ const startServer = async () => {
 
         initializeApp({
             credential: cert(serviceAccount),
-            databaseURL: config.firebase.databaseURL,
         });
 
         const app = express();
@@ -25,6 +27,7 @@ const startServer = async () => {
 
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(bodyParser.json());
+        app.use(cors());
 
         app.use(expressWinston.logger({
             transports: [
@@ -58,9 +61,26 @@ const startServer = async () => {
             ),
         }));
 
-        app.listen(port, () => {
+        const server = createServer(app);
+
+        const io = new Server(server, {
+            cors: {
+                origin: 'http://localhost:3001',
+                methods: ['GET', 'POST'],
+                credentials: true,
+            },
+        });
+        server.listen(port, ()=>{
             console.log(`server is listening on ${port} !!!`);
         });
+
+        io.on('connection', (socket) => {
+            console.log(`${socket.id} is connected!`);
+            socket.on('disconnect', () => {
+                console.log(`${socket.id} is disconnected!`);
+            });
+        });
+        orderHandler(io);
     } catch (err) {
         throw err;
     }

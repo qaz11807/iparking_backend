@@ -10,7 +10,8 @@ var plate_route_1 = require("./plate.route");
 var user_route_1 = require("./user.route");
 var payment_route_1 = require("./payment.route");
 var cloud_message_route_1 = require("./cloud-message.route");
-var defaultAdminPrefix = '/dashboard';
+var config_1 = __importDefault(require("../../config"));
+var defaultAdminPrefix = config_1.default.defaultAdminPrefix;
 exports.routers = [
     new auth_route_1.default(),
     new order_route_1.OrderRoute(),

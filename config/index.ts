@@ -9,8 +9,7 @@ const config = {
     defaultAdminPrefix: '/dashboard',
     jwtSecret: process.env.SECRET,
     firebase: {
-        databaseURL: 'https://ipark-dev-6eaf6.firebaseio.com',
-        serviceAccountFilePath: path.join(__dirname, '/./ipark-dev-6eaf6-firebase-adminsdk-jlepc-21c05de00b.json'),
+        serviceAccountFilePath: path.join(__dirname, '/../firebase/iparking-40634-firebase-adminsdk-rkufr-79d084e0fa.json'),
     },
     database: {
         username: process.env.DBUSER,

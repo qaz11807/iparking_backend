@@ -3,9 +3,10 @@ import passport from 'passport';
 
 /** middleware imported */
 import * as PayApi from '../middleware/payment-middleware';
+import {schemaGetter} from '../middleware/validator-middleware';
 
 /** api request validator */
-import * as PayRequest from '../requests/pay-request';
+import ValidatorClient from '../valiadtors/client/pay';
 
 /** Class representing Order Route. */
 class PayRoute extends BaseRoute {
@@ -21,9 +22,8 @@ class PayRoute extends BaseRoute {
      * Set the router's routes and middleware.
      */
     protected setRoutes() {
-        /** User */
         this.router.post('/callback/:id', PayApi.user.paidResultCallback);
-        this.router.get('/:id', passport.authenticate('token', {session: false}), PayRequest.user.getPayUrl, PayApi.user.getPayUrl);
+        this.router.get('/:id', passport.authenticate('token', {session: false}), schemaGetter(ValidatorClient.getPayUrl), PayApi.user.getPayUrl);
     }
 }
 

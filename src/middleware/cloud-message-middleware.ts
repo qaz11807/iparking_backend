@@ -14,29 +14,54 @@ export namespace admin {
         try {
             const payload = req.body;
             const plate = await Plate.findOne({where: {license: payload.license}});
+            if (!plate) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'Plate Not Exist!',
+                });
+            }
             const user = await plate.getUser();
+            if (!user) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'User Not Exist!',
+                });
+            }
 
             const mockOrder = {
                 enterTime: new Date(),
-                status: Status.enter,
+                status: Status.pending,
                 PlateId: plate.id,
             };
-            await user.createOrder(mockOrder);
+            const order = await user.createOrder(mockOrder);
 
             await sendMessage(enterMessage(user.deviceToken));
 
-            res.send('OK');
+            res.send({
+                status: ResponseStatus.Success,
+                data: order.id,
+            });
         } catch (error) {
             throw error;
         }
     };
-
     export const simulateExit = async (req:Request, res:Response) => {
         try {
             const payload = req.body;
             const plate = await Plate.findOne({where: {license: payload.license}});
+            if (!plate) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'Plate Not Exist!',
+                });
+            }
             const user = await plate.getUser();
-
+            if (!user) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'User Not Exist!',
+                });
+            }
             const orders = await user.getOrders({
                 where: {
                     status: Status.exit,

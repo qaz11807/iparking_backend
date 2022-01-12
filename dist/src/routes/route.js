@@ -45,6 +45,9 @@ var BaseRoute = /** @class */ (function () {
         if (basePrefix) {
             this.prefix = basePrefix;
         }
+        else {
+            this.prefix = '';
+        }
     }
     /**
      * Get the router.

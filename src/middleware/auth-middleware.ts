@@ -34,7 +34,7 @@ passport.use('signin', new Strategy(async (username, password, done) => {
             isValid = await checkPassword(user, password);
         }
         if (isValid) {
-            done(null, user);
+            done(null, user, {message: '登入成功'});
         } else {
             done(null, null);
         }
@@ -51,11 +51,7 @@ passport.use('token',
     async (jwtPayload, done) => {
         try {
             const user = await User.findByPk(jwtPayload.id);
-            if (user !== null) {
-                done(null, user);
-            } else {
-                done('Can not find user !');
-            }
+            done(null, user);
         } catch (err) {
             done(err);
         }

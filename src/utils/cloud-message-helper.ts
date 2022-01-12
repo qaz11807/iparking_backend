@@ -5,6 +5,7 @@ export const sendMessage = async (message: Message) => {
         const response = await getMessaging().send(message);
         console.log('Successfully sent message:', response);
     } catch (err) {
+        console.log(err);
         throw err;
     }
 };

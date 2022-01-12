@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generatePayUrl = void 0;
 var date_helper_1 = require("./date-helper");
+var config_1 = __importDefault(require("../../config"));
 var Ecpaypayment = require('ecpay-payment');
 var create = new Ecpaypayment();
 var generateTradeUID = function () {
@@ -19,7 +23,7 @@ var initParm = function (orderId, price) {
         TotalAmount: price.toString(),
         TradeDesc: '這是一筆信用卡繳費測試',
         ItemName: '停車場繳費',
-        ReturnURL: "https://8c4b-111-255-87-170.ngrok.io/pay/callback/".concat(orderId),
+        ReturnURL: "".concat(config_1.default.url, "/pay/callback/").concat(orderId),
     };
 };
 var generatePayUrl = function (orderId, price) {

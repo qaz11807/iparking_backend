@@ -47,9 +47,10 @@ var passport_jwt_1 = __importDefault(require("passport-jwt"));
 var passport_local_1 = require("passport-local");
 var models_1 = __importDefault(require("../../models"));
 var role_1 = require("../../models/interfaces/role");
+var config_1 = __importDefault(require("../../config"));
 var JWTStrategy = passport_jwt_1.default.Strategy;
 var extractJWT = passport_jwt_1.default.ExtractJwt;
-var secretKey = 'kldxnflkdzsfrfa';
+var secretKey = config_1.default.jwtSecret;
 var User = models_1.default.User;
 var checkPassword = function (user, password) { return __awaiter(void 0, void 0, void 0, function () {
     var err_1;
@@ -86,12 +87,12 @@ passport_1.default.use('signin', new passport_local_1.Strategy(function (usernam
                     done(null, user);
                 }
                 else {
-                    done(new Error('Compare password failed!'), false);
+                    done(null, null);
                 }
                 return [3 /*break*/, 5];
             case 4:
                 err_2 = _a.sent();
-                done(err_2, false);
+                done(err_2);
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
         }
@@ -113,7 +114,7 @@ passport_1.default.use('token', new JWTStrategy({
                     done(null, user);
                 }
                 else {
-                    done(new Error('Can not find user by id !'));
+                    done('Can not find user !');
                 }
                 return [3 /*break*/, 3];
             case 2:

@@ -6,6 +6,15 @@ import {ResponseStatus} from '../interfaces/response';
 const User = db.User;
 const Plate = db.Plate;
 
+export const checkPlateIsExist = async (license:string, id: number| null) : Promise<boolean> => {
+    try {
+        const plate = await Plate.findOne({where: {id, license}});
+        return plate !== null;
+    } catch (err) {
+        throw err;
+    }
+};
+
 /** Normal User */
 
 export namespace user{
@@ -30,6 +39,13 @@ export namespace user{
         try {
             const user = req.user as UserInstance;
             const license = req.body.license;
+            const isExist = await checkPlateIsExist(license, null);
+            if (isExist) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
+            }
             await user.createPlate({
                 license: license,
             });
@@ -46,7 +62,16 @@ export namespace user{
             const user = req.user as UserInstance;
             const plateId = req.params.id;
             const license = req.body.license;
-
+            const isExist = await checkPlateIsExist(license, +plateId);
+            if (isExist) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
+            }
+            await user.createPlate({
+                license: license,
+            });
             const plates = await user.getPlates({
                 where: {id: plateId}, raw: true,
             });
@@ -102,17 +127,40 @@ export namespace user{
 /** Admin */
 
 export namespace admin{
-    export const createPlate = async (req:Request, res:Response) => {
+
+    export const getCount = async (req:Request, res:Response) => {
         try {
-            const payload = req.body;
-            const user = await User.findOne({where: {id: payload.userId}});
-            const mockPlate = {
-                license: payload.license,
-            };
-            const instance = await user.createPlate(mockPlate);
+            const count = await Plate.count();
             res.json({
                 status: ResponseStatus.Success,
-                data: instance.toJson(),
+                data: count,
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    export const getPlate = async (req:Request, res:Response) => {
+        try {
+            const plate = await Plate.findOne({
+                where: {id: req.params.id},
+                attributes: [
+                    'id', 'license',
+                ],
+                include: {
+                    model: User,
+                    attributes: ['username'],
+                },
+            });
+            if (plate == null) {
+                res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'Plate not Exist !',
+                });
+            }
+            res.json({
+                status: ResponseStatus.Success,
+                data: plate,
             });
         } catch (error) {
             throw error;
@@ -123,12 +171,102 @@ export namespace admin{
         try {
             const pageSize = +req.query.pageSize!;
             const page = +req.query.page! - 1;
-            const order = await Plate.findAll(
-                paginate({page: page, pageSize: pageSize}),
+            const plates = await Plate.findAll(
+                paginate({page: page, pageSize: pageSize}, {
+                    attributes: [
+                        'id', 'license',
+                    ],
+                    include: {
+                        model: User,
+                        attributes: ['username'],
+                    },
+                }),
             );
             res.json({
                 status: ResponseStatus.Success,
-                data: order,
+                data: plates,
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    export const createPlate = async (req:Request, res:Response) => {
+        try {
+            const payload = req.body;
+            let userId;
+            if (payload.User) {
+                const user = await User.findOne({where: {username: payload.User.username}});
+                if (!user) {
+                    return res.json({
+                        status: ResponseStatus.Failed,
+                        error: 'User Not Exist!',
+                    });
+                }
+                userId = user.id;
+            }
+
+            const isExist = await checkPlateIsExist(payload.license, null);
+            if (isExist) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
+            }
+
+            const created = {
+                license: payload.license,
+                UserId: userId,
+            };
+
+            await Plate.create(created);
+            res.json({
+                status: ResponseStatus.Success,
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    export const updatePlate = async (req:Request, res:Response) => {
+        try {
+            const payload = req.body;
+            let userId;
+            if (payload.User) {
+                const user = await User.findOne({where: {username: payload.User.username}});
+                if (!user) {
+                    return res.json({
+                        status: ResponseStatus.Failed,
+                        error: 'User Not Exist!',
+                    });
+                }
+                userId = user.id;
+            }
+            const isExist = await checkPlateIsExist(payload.license, +payload.id);
+            if (isExist) {
+                return res.json({
+                    status: ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
+            }
+            const updated = {
+                license: payload.license,
+                UserId: userId,
+            };
+            await Plate.update(updated, {where: {id: req.params.id}});
+            res.json({
+                status: ResponseStatus.Success,
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    export const deletePlate = async (req:Request, res:Response) => {
+        try {
+            await Plate.destroy({where: {id: req.params.id}});
+            res.json({
+                status: ResponseStatus.Success,
             });
         } catch (error) {
             throw error;

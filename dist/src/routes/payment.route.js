@@ -62,7 +62,7 @@ var PayRoute = /** @class */ (function (_super) {
     PayRoute.prototype.setRoutes = function () {
         /** User */
         this.router.post('/callback/:id', PayApi.user.paidResultCallback);
-        this.router.post('/:id', passport_1.default.authenticate('token', { session: false }), PayRequest.user.getPayUrl, PayApi.user.getPayUrl);
+        this.router.get('/:id', passport_1.default.authenticate('token', { session: false }), PayRequest.user.getPayUrl, PayApi.user.getPayUrl);
     };
     return PayRoute;
 }(route_1.BaseRoute));
