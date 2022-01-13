@@ -82,6 +82,8 @@ var path_1 = __importDefault(require("path"));
 
 var openapi_json_1 = __importDefault(require("../openapi.json"));
 
+var iparking_40634_firebase_adminsdk_rkufr_79d084e0fa_json_1 = __importDefault(require("../firebase/iparking-40634-firebase-adminsdk-rkufr-79d084e0fa.json"));
+
 var startServer = function startServer() {
   return __awaiter(void 0, void 0, void 0, /*#__PURE__*/_regenerator["default"].mark(function _callee() {
     var app, port, _iterator, _step, router, server, io;
@@ -97,7 +99,7 @@ var startServer = function startServer() {
           case 3:
             console.log("database success sync !!!");
             (0, app_1.initializeApp)({
-              credential: (0, app_1.applicationDefault)()
+              credential: (0, app_1.cert)(iparking_40634_firebase_adminsdk_rkufr_79d084e0fa_json_1["default"])
             });
             app = (0, express_1["default"])();
             port = config_1["default"].port;

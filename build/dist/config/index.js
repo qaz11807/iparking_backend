@@ -12,12 +12,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var dotenv_1 = __importDefault(require("dotenv"));
 
+var path_1 = __importDefault(require("path"));
+
 dotenv_1["default"].config();
 var config = {
   url: process.env.HOST,
   port: process.env.PORT || 3000,
   defaultAdminPrefix: '/dashboard',
   jwtSecret: process.env.SECRET,
+  firebase: {
+    serviceAccountFilePath: path_1["default"].join(__dirname, '/../firebase/iparking-40634-firebase-adminsdk-rkufr-79d084e0fa.json')
+  },
   database: {
     username: process.env.DBUSER,
     host: process.env.DBHOST,

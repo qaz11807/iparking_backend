@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import config from '../config';
 import db from '../models';
 import {routers} from './routes';
-import {initializeApp, cert, ServiceAccount} from 'firebase-admin/app';
+import {initializeApp, applicationDefault} from 'firebase-admin/app';
 import swaggerUI from 'swagger-ui-express';
 import cors from 'cors';
 import {Server} from 'socket.io';
@@ -13,14 +13,13 @@ import {createServer} from 'http';
 import orderHandler from './middleware/socket-middleware';
 import path from 'path';
 import swaggerDocument from '../openapi.json';
-import serviceAccount from '../firebase/iparking-40634-firebase-adminsdk-rkufr-79d084e0fa.json';
 const startServer = async () => {
     try {
         await db.sequelize.sync();
         console.log(`database success sync !!!`);
 
         initializeApp({
-            credential: cert(serviceAccount as ServiceAccount),
+            credential: applicationDefault(),
         });
 
         const app = express();

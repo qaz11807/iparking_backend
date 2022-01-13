@@ -27,13 +27,12 @@ const http_1 = require("http");
 const socket_middleware_1 = __importDefault(require("./middleware/socket-middleware"));
 const path_1 = __importDefault(require("path"));
 const openapi_json_1 = __importDefault(require("../openapi.json"));
-const iparking_40634_firebase_adminsdk_rkufr_79d084e0fa_json_1 = __importDefault(require("../firebase/iparking-40634-firebase-adminsdk-rkufr-79d084e0fa.json"));
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield models_1.default.sequelize.sync();
         console.log(`database success sync !!!`);
         (0, app_1.initializeApp)({
-            credential: (0, app_1.cert)(iparking_40634_firebase_adminsdk_rkufr_79d084e0fa_json_1.default),
+            credential: (0, app_1.applicationDefault)(),
         });
         const app = (0, express_1.default)();
         const port = config_1.default.port;
