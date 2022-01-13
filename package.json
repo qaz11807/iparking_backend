@@ -2,12 +2,14 @@
   "name": "parking_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
   "scripts": {
-    "start": "nodemon index.ts",
-    "build": "tsc --project ./",
+    "start": "node build/src/index.js",
+    "ts-build": "tsc --project .",
+    "build": "npm run ts-build && gulp babel",
+    "dev": "nodemon src/index.ts",
     "lint": "eslint",
     "prepare": "husky install",
+    "clean": "rm -rf dist",
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
@@ -23,6 +25,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/node": "^7.16.8",
+    "@babel/plugin-transform-runtime": "^7.16.8",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/register": "^7.16.9",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
@@ -32,6 +39,7 @@
     "@types/passport": "^1.0.7",
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
+    "@types/sequelize": "^4.28.11",
     "@types/swagger-ui-express": "^4.1.3",
     "@types/validator": "^13.7.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -39,10 +47,13 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.0.1",
     "eslint-config-google": "^0.14.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "husky": "^7.0.0",
     "lint-staged": "^12.1.4",
     "nodemon": "^2.0.15",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "ts-node": "^10.4.0"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -64,12 +75,11 @@
     "pg-hstore": "^2.3.4",
     "prettier": "^2.5.1",
     "reflect-metadata": "^0.1.13",
-    "sequelize": "^6.12.0",
-    "sequelize-typescript": "^2.1.1",
+    "sequelize": "^6.13.0",
     "socket.io": "^4.4.1",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
-    "ts-node": "^10.4.0",
+    "webpack-node-externals": "^3.0.0",
     "winston": "^3.3.3"
   },
   "config": {

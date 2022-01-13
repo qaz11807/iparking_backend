@@ -1,37 +1,35 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.paginate = void 0;
-var sequelize_1 = require("sequelize");
-var fs_1 = __importDefault(require("fs"));
-var path_1 = __importDefault(require("path"));
-var config_1 = __importDefault(require("../config"));
-var basename = path_1.default.basename(__filename);
-var dbConfig = config_1.default.database.ssl ? __assign(__assign({}, config_1.default.database), { dialectOptions: { ssl: { require: true } } }) : config_1.default.database;
-var sequelize = new sequelize_1.Sequelize(dbConfig);
-var db = {};
+const sequelize_1 = require("sequelize");
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const config_1 = __importDefault(require("../config"));
+const basename = path_1.default.basename(__filename);
+const dbConfig = config_1.default.database.ssl ? Object.assign(Object.assign({}, config_1.default.database), { dialectOptions: { ssl: { require: true } } }) : config_1.default.database;
+const sequelize = new sequelize_1.Sequelize(dbConfig);
+const db = {};
 fs_1.default.readdirSync(__dirname)
-    .filter(function (file) {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.ts');
+    .filter((file) => {
+    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === ('.ts') || file.slice(-3) === ('.js'));
 })
-    .forEach(function (file) {
-    var model = require(path_1.default.join(__dirname, file)).default(sequelize);
+    .forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
+    const model = require(path_1.default.join(__dirname, file)).default(sequelize);
     db[model.name] = model;
-});
-Object.values(db).forEach(function (model) {
+}));
+Object.values(db).forEach((model) => {
     if (model.associate) {
         model.associate(db);
     }
@@ -39,10 +37,10 @@ Object.values(db).forEach(function (model) {
 db.sequelize = sequelize;
 db.Sequelize = sequelize_1.Sequelize;
 exports.default = db;
-var paginate = function (_a, query) {
-    var page = _a.page, pageSize = _a.pageSize;
-    var limit = pageSize ? pageSize : 10;
-    var offset = page ? page * pageSize : 0;
-    return __assign(__assign({}, query), { offset: offset, limit: limit });
+const paginate = ({ page, pageSize }, query) => {
+    const limit = pageSize ? pageSize : 10;
+    const offset = page ? (page) * pageSize : 0;
+    return Object.assign(Object.assign({}, query), { offset,
+        limit });
 };
 exports.paginate = paginate;

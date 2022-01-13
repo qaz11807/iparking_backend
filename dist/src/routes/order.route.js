@@ -1,19 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -33,69 +18,63 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderAdminRoute = exports.OrderRoute = void 0;
-var route_1 = require("./route");
+const route_1 = require("./route");
 /** middleware imported */
-var OrderApi = __importStar(require("../middleware/order-middleware"));
+const validator_middleware_1 = require("../middleware/validator-middleware");
+const OrderApi = __importStar(require("../middleware/order-middleware"));
 /** api request validator */
-var OrderRequest = __importStar(require("../requests/order-request"));
+const order_1 = __importDefault(require("../valiadtors/client/order"));
+const order_2 = __importDefault(require("../valiadtors/dashboard/order"));
 /** Class representing Order Route. */
-var OrderRoute = /** @class */ (function (_super) {
-    __extends(OrderRoute, _super);
+class OrderRoute extends route_1.AuthRoute {
     /**
      * Create a routes.
      * @param {string} basePrefix
      */
-    function OrderRoute(basePrefix) {
-        var _this = _super.call(this, basePrefix) || this;
-        _this.prefix += '/order';
-        _this.preHandlers = __spreadArray([], _this.preHandlers, true);
-        _this.setRoutes();
-        return _this;
+    constructor(basePrefix) {
+        super(basePrefix);
+        this.prefix += '/order';
+        this.preHandlers = [...this.preHandlers];
+        this.setRoutes();
     }
     /**
      * Set the router's routes and middleware.
      */
-    OrderRoute.prototype.setRoutes = function () {
-        this.router.get('/', OrderRequest.user.getAllOrders, OrderApi.user.getAllOrders);
+    setRoutes() {
+        this.router.get('/', (0, validator_middleware_1.schemaGetter)(order_1.default.getAll), OrderApi.user.getAllOrders);
         this.router.get('/latest', OrderApi.user.getLatestOrder);
-        this.router.put('/:id', OrderRequest.user.replyOrderChoice, OrderApi.user.replyOrderChoice);
-        this.router.delete('/:id', OrderRequest.user.deleteOrder, OrderApi.user.deleteOrder);
-    };
-    return OrderRoute;
-}(route_1.AuthRoute));
+        this.router.put('/:id', (0, validator_middleware_1.schemaGetter)(order_1.default.replyOrder), OrderApi.user.replyOrderChoice);
+        this.router.delete('/:id', (0, validator_middleware_1.schemaGetter)(order_1.default.delete), OrderApi.user.deleteOrder);
+    }
+}
 exports.OrderRoute = OrderRoute;
 /** */
-var OrderAdminRoute = /** @class */ (function (_super) {
-    __extends(OrderAdminRoute, _super);
+class OrderAdminRoute extends route_1.AdminRoute {
     /**
      * Create a routes.
      * @param {string} basePrefix
      */
-    function OrderAdminRoute(basePrefix) {
-        var _this = _super.call(this, basePrefix) || this;
-        _this.prefix += '/order';
-        _this.preHandlers = __spreadArray([], _this.preHandlers, true);
-        _this.setRoutes();
-        return _this;
+    constructor(basePrefix) {
+        super(basePrefix);
+        this.prefix += '/order';
+        this.preHandlers = [...this.preHandlers];
+        this.setRoutes();
     }
     /**
      * Set the router's routes and middleware.
      */
-    OrderAdminRoute.prototype.setRoutes = function () {
-        this.router.get('/', OrderRequest.admin.getAllOrders, OrderApi.admin.getAllOrders);
-        this.router.post('/', OrderRequest.admin.createOrder, OrderApi.admin.createOrder);
-    };
-    return OrderAdminRoute;
-}(route_1.AdminRoute));
+    setRoutes() {
+        this.router.get('/count', OrderApi.admin.getCount);
+        this.router.get('/', (0, validator_middleware_1.schemaGetter)(order_2.default.getAll), OrderApi.admin.getAllOrders);
+        this.router.get('/:id', (0, validator_middleware_1.schemaGetter)(order_2.default.get), OrderApi.admin.getOrder);
+        this.router.post('/', (0, validator_middleware_1.schemaGetter)(order_2.default.create), OrderApi.admin.createOrder);
+        this.router.put('/:id', (0, validator_middleware_1.schemaGetter)(order_2.default.update), OrderApi.admin.updateOrder);
+        this.router.delete('/:id', (0, validator_middleware_1.schemaGetter)(order_2.default.delete), OrderApi.admin.deleteOrder);
+    }
+}
 exports.OrderAdminRoute = OrderAdminRoute;

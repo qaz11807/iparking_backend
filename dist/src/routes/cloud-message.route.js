@@ -1,19 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -38,35 +23,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageAdminRoute = void 0;
-var route_1 = require("./route");
+const route_1 = require("./route");
 /** middleware imported */
-var auth_middleware_1 = require("../middleware/auth-middleware");
-var MessageApi = __importStar(require("../middleware/cloud-message-middleware"));
+const MessageApi = __importStar(require("../middleware/cloud-message-middleware"));
+const validator_middleware_1 = require("../middleware/validator-middleware");
 /** api request validator */
-var MessageRequest = __importStar(require("../requests/cloud-message-request"));
-var passport_1 = __importDefault(require("passport"));
+const cloud_message_1 = __importDefault(require("../valiadtors/dashboard/cloud-message"));
 /** Class representing Dashboard Simulated Route. */
-var MessageAdminRoute = /** @class */ (function (_super) {
-    __extends(MessageAdminRoute, _super);
+class MessageAdminRoute extends route_1.AdminRoute {
     /**
      * Create a routes.
      * @param {string} basePrefix
      */
-    function MessageAdminRoute(basePrefix) {
-        var _this = _super.call(this, basePrefix) || this;
-        _this.prefix += '/simulate';
-        _this.preHandlers = [passport_1.default.authenticate('token', { session: false })];
-        _this.setRoutes();
-        return _this;
+    constructor(basePrefix) {
+        super(basePrefix);
+        this.prefix += '/simulate';
+        this.setRoutes();
     }
     /**
      * Set the router's routes and middleware.
      */
-    MessageAdminRoute.prototype.setRoutes = function () {
+    setRoutes() {
         /** Admin */
-        this.router.post('/enter', auth_middleware_1.permissionAuth, MessageRequest.admin.simulateEnter, MessageApi.admin.simulateEnter);
-        this.router.post('/exit', auth_middleware_1.permissionAuth, MessageRequest.admin.simulateExit, MessageApi.admin.simulateExit);
-    };
-    return MessageAdminRoute;
-}(route_1.AdminRoute));
+        this.router.post('/enter', (0, validator_middleware_1.schemaGetter)(cloud_message_1.default.simulateEnter), MessageApi.admin.simulateEnter);
+        this.router.post('/exit', (0, validator_middleware_1.schemaGetter)(cloud_message_1.default.simulateExit), MessageApi.admin.simulateExit);
+    }
+}
 exports.MessageAdminRoute = MessageAdminRoute;

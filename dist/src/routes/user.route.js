@@ -1,19 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -33,32 +18,62 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserRoute = void 0;
-var route_1 = require("./route");
+exports.UserAdminRoute = exports.UserRoute = void 0;
+const route_1 = require("./route");
+const validator_middleware_1 = require("../middleware/validator-middleware");
 /** middleware imported */
-var UserApi = __importStar(require("../middleware/user-middleware"));
+const UserApi = __importStar(require("../middleware/user-middleware"));
+const register_middleware_1 = require("../middleware/register-middleware");
 /** api request validator */
-var UserRequest = __importStar(require("../requests/user-request"));
+const user_1 = __importDefault(require("../valiadtors/client/user"));
+const user_2 = __importDefault(require("../valiadtors/dashboard/user"));
 /** Class representing Order Route. */
-var UserRoute = /** @class */ (function (_super) {
-    __extends(UserRoute, _super);
+class UserRoute extends route_1.AuthRoute {
     /**
      * Create a routes.
      * @param {string} basePrefix
      */
-    function UserRoute(basePrefix) {
-        var _this = _super.call(this, basePrefix) || this;
-        _this.prefix += '/user';
-        _this.setRoutes();
-        return _this;
+    constructor(basePrefix) {
+        super(basePrefix);
+        this.prefix += '/user';
+        this.setRoutes();
     }
     /**
      * Set the router's routes and middleware.
      */
-    UserRoute.prototype.setRoutes = function () {
-        this.router.put('/token', UserRequest.user.updateDeviceToken, UserApi.user.updateDeviceToken);
-    };
-    return UserRoute;
-}(route_1.AuthRoute));
+    setRoutes() {
+        this.router.put('/token', (0, validator_middleware_1.schemaGetter)(user_1.default.updateToken), UserApi.user.updateDeviceToken);
+    }
+}
 exports.UserRoute = UserRoute;
+/**
+ *
+ */
+class UserAdminRoute extends route_1.AdminRoute {
+    /**
+     * Create a routes.
+     * @param {string} basePrefix
+     */
+    constructor(basePrefix) {
+        super(basePrefix);
+        this.prefix += '/user';
+        this.setRoutes();
+    }
+    /**
+     * Set the router's routes and middleware.
+     */
+    setRoutes() {
+        this.router.get('/count', UserApi.admin.getCount);
+        this.router.get('/my', UserApi.admin.getSelf);
+        this.router.get('/', (0, validator_middleware_1.schemaGetter)(user_2.default.getAll), UserApi.admin.getAllUsers);
+        this.router.post('/', (0, validator_middleware_1.schemaGetter)(user_2.default.create), register_middleware_1.registerUserWithRole);
+        this.router.put('/:id', (0, validator_middleware_1.schemaGetter)(user_2.default.update), UserApi.admin.updateUser);
+        this.router.get('/:id', (0, validator_middleware_1.schemaGetter)(user_2.default.get), UserApi.admin.getUser);
+        this.router.delete('/:id', (0, validator_middleware_1.schemaGetter)(user_2.default.delete), UserApi.admin.deleteOrder);
+    }
+}
+exports.UserAdminRoute = UserAdminRoute;

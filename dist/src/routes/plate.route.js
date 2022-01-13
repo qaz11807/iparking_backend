@@ -1,19 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -33,60 +18,62 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlatedminRoute = exports.PlateRoute = void 0;
-var route_1 = require("./route");
+const route_1 = require("./route");
 /** middleware imported */
-var auth_middleware_1 = require("../middleware/auth-middleware");
-var PlateApi = __importStar(require("../middleware/plate-middleware"));
+const PlateApi = __importStar(require("../middleware/plate-middleware"));
+const validator_middleware_1 = require("../middleware/validator-middleware");
 /** api request validator */
-var PlateRequest = __importStar(require("../requests/plate-request"));
+const plate_1 = __importDefault(require("../valiadtors/client/plate"));
+const plate_2 = __importDefault(require("../valiadtors/dashboard/plate"));
 /** Class representing Plate Route. */
-var PlateRoute = /** @class */ (function (_super) {
-    __extends(PlateRoute, _super);
+class PlateRoute extends route_1.AuthRoute {
     /**
      * Create a routes.
      * @param {string} basePrefix
      */
-    function PlateRoute(basePrefix) {
-        var _this = _super.call(this, basePrefix) || this;
-        _this.prefix += '/plate';
-        _this.setRoutes();
-        return _this;
+    constructor(basePrefix) {
+        super(basePrefix);
+        this.prefix += '/plate';
+        this.setRoutes();
     }
     /**
      * Set the router's routes and middleware.
      */
-    PlateRoute.prototype.setRoutes = function () {
+    setRoutes() {
         /** User */
-        this.router.get('/', PlateRequest.user.getAllPlates, PlateApi.user.getAllPlates);
-        this.router.post('/', PlateRequest.user.createPlate, PlateApi.user.createPlate);
-        this.router.put('/', PlateRequest.user.updatePlate, PlateApi.user.updatePlate);
-        this.router.delete('/', PlateRequest.user.deletePlate, PlateApi.user.deletePlate);
-    };
-    return PlateRoute;
-}(route_1.AuthRoute));
+        this.router.get('/', (0, validator_middleware_1.schemaGetter)(plate_1.default.getAll), PlateApi.user.getAllPlates);
+        this.router.post('/', (0, validator_middleware_1.schemaGetter)(plate_1.default.create), PlateApi.user.createPlate);
+        this.router.put('/', (0, validator_middleware_1.schemaGetter)(plate_1.default.update), PlateApi.user.updatePlate);
+        this.router.delete('/', (0, validator_middleware_1.schemaGetter)(plate_1.default.delete), PlateApi.user.deletePlate);
+    }
+}
 exports.PlateRoute = PlateRoute;
 /** Class representing Dashboard Plate Route. */
-var PlatedminRoute = /** @class */ (function (_super) {
-    __extends(PlatedminRoute, _super);
+class PlatedminRoute extends route_1.AdminRoute {
     /**
      * Create a routes.
      * @param {string} basePrefix
      */
-    function PlatedminRoute(basePrefix) {
-        var _this = _super.call(this, basePrefix) || this;
-        _this.prefix += '/plate';
-        _this.setRoutes();
-        return _this;
+    constructor(basePrefix) {
+        super(basePrefix);
+        this.prefix += '/plate';
+        this.setRoutes();
     }
     /**
      * Set the router's routes and middleware.
      */
-    PlatedminRoute.prototype.setRoutes = function () {
-        this.router.get('/', auth_middleware_1.permissionAuth, PlateRequest.admin.getAllPlates, PlateApi.admin.getAllPlates);
-        this.router.post('/', auth_middleware_1.permissionAuth, PlateRequest.admin.createPlate, PlateApi.admin.createPlate);
-    };
-    return PlatedminRoute;
-}(route_1.AdminRoute));
+    setRoutes() {
+        this.router.get('/count', PlateApi.admin.getCount);
+        this.router.get('/', (0, validator_middleware_1.schemaGetter)(plate_2.default.getAll), PlateApi.admin.getAllPlates);
+        this.router.get('/:id', (0, validator_middleware_1.schemaGetter)(plate_2.default.get), PlateApi.admin.getPlate);
+        this.router.post('/', (0, validator_middleware_1.schemaGetter)(plate_2.default.create), PlateApi.admin.createPlate);
+        this.router.put('/:id', (0, validator_middleware_1.schemaGetter)(plate_2.default.update), PlateApi.admin.updatePlate);
+        this.router.delete('/:id', (0, validator_middleware_1.schemaGetter)(plate_2.default.delete), PlateApi.admin.deletePlate);
+    }
+}
 exports.PlatedminRoute = PlatedminRoute;

@@ -27,219 +27,268 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.admin = exports.user = void 0;
-var models_1 = __importStar(require("../../models"));
-var response_1 = require("../interfaces/response");
-var User = models_1.default.User;
-var Plate = models_1.default.Plate;
+exports.admin = exports.user = exports.checkPlateIsExist = void 0;
+const models_1 = __importStar(require("../../models"));
+const response_1 = require("../interfaces/response");
+const User = models_1.default.User;
+const Plate = models_1.default.Plate;
+const checkPlateIsExist = (license, id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const plate = yield Plate.findOne({ where: { id, license } });
+        return plate !== null;
+    }
+    catch (err) {
+        throw err;
+    }
+});
+exports.checkPlateIsExist = checkPlateIsExist;
 /** Normal User */
 var user;
 (function (user_1) {
-    var _this = this;
-    user_1.getAllPlates = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var user_2, pageSize, page, plates, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    user_2 = req.user;
-                    pageSize = +req.query.pageSize;
-                    page = +req.query.page - 1;
-                    return [4 /*yield*/, user_2.getPlates((0, models_1.paginate)({ page: page, pageSize: pageSize }))];
-                case 1:
-                    plates = _a.sent();
-                    res.json({
-                        status: response_1.ResponseStatus.Success,
-                        data: plates,
-                    });
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    throw error_1;
-                case 3: return [2 /*return*/];
+    user_1.getAllPlates = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = req.user;
+            const pageSize = +req.query.pageSize;
+            const page = +req.query.page - 1;
+            const plates = yield user.getPlates((0, models_1.paginate)({ page: page, pageSize: pageSize }));
+            res.json({
+                status: response_1.ResponseStatus.Success,
+                data: plates,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    user_1.createPlate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = req.user;
+            const license = req.body.license;
+            const isExist = yield (0, exports.checkPlateIsExist)(license, null);
+            if (isExist) {
+                return res.json({
+                    status: response_1.ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
             }
-        });
-    }); };
-    user_1.createPlate = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var user_3, license, error_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    user_3 = req.user;
-                    license = req.body.license;
-                    return [4 /*yield*/, user_3.createPlate({
-                            license: license,
-                        })];
-                case 1:
-                    _a.sent();
-                    res.json({
-                        status: response_1.ResponseStatus.Success,
-                    });
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_2 = _a.sent();
-                    throw error_2;
-                case 3: return [2 /*return*/];
+            yield user.createPlate({
+                license: license,
+            });
+            res.json({
+                status: response_1.ResponseStatus.Success,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    user_1.updatePlate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = req.user;
+            const plateId = req.params.id;
+            const license = req.body.license;
+            const isExist = yield (0, exports.checkPlateIsExist)(license, +plateId);
+            if (isExist) {
+                return res.json({
+                    status: response_1.ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
             }
-        });
-    }); };
-    user_1.updatePlate = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var user_4, plateId, license, plates, plate, updatedPlate, error_3;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    user_4 = req.user;
-                    plateId = req.params.id;
-                    license = req.body.license;
-                    return [4 /*yield*/, user_4.getPlates({
-                            where: { id: plateId }, raw: true,
-                        })];
-                case 1:
-                    plates = _a.sent();
-                    plate = plates[0];
-                    if (!(plate == null)) return [3 /*break*/, 2];
-                    res.json({
-                        status: response_1.ResponseStatus.Failed,
-                        error: 'Plate not exist!',
-                    });
-                    return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, plate.update({
-                        license: license,
-                    })];
-                case 3:
-                    updatedPlate = _a.sent();
-                    res.json({
-                        status: response_1.ResponseStatus.Success,
-                        data: updatedPlate,
-                    });
-                    _a.label = 4;
-                case 4: return [3 /*break*/, 6];
-                case 5:
-                    error_3 = _a.sent();
-                    throw error_3;
-                case 6: return [2 /*return*/];
+            yield user.createPlate({
+                license: license,
+            });
+            const plates = yield user.getPlates({
+                where: { id: plateId }, raw: true,
+            });
+            const plate = plates[0];
+            if (plate == null) {
+                res.json({
+                    status: response_1.ResponseStatus.Failed,
+                    error: 'Plate not exist!',
+                });
             }
-        });
-    }); };
-    user_1.deletePlate = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var user_5, plateId, plates, plate, error_4;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    user_5 = req.user;
-                    plateId = req.params.id;
-                    return [4 /*yield*/, user_5.getPlates({
-                            where: { id: plateId }, raw: true,
-                        })];
-                case 1:
-                    plates = _a.sent();
-                    plate = plates[0];
-                    if (!(plate == null)) return [3 /*break*/, 2];
-                    res.json({
-                        status: response_1.ResponseStatus.Failed,
-                        error: 'Plate not exist!',
-                    });
-                    return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, plate.destroy()];
-                case 3:
-                    _a.sent();
-                    res.json({
-                        status: response_1.ResponseStatus.Success,
-                    });
-                    _a.label = 4;
-                case 4: return [3 /*break*/, 6];
-                case 5:
-                    error_4 = _a.sent();
-                    throw error_4;
-                case 6: return [2 /*return*/];
+            else {
+                const updatedPlate = yield plate.update({
+                    license: license,
+                });
+                res.json({
+                    status: response_1.ResponseStatus.Success,
+                    data: updatedPlate,
+                });
             }
-        });
-    }); };
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    user_1.deletePlate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = req.user;
+            const plateId = req.params.id;
+            const plates = yield user.getPlates({
+                where: { id: plateId }, raw: true,
+            });
+            const plate = plates[0];
+            if (plate == null) {
+                res.json({
+                    status: response_1.ResponseStatus.Failed,
+                    error: 'Plate not exist!',
+                });
+            }
+            else {
+                yield plate.destroy();
+                res.json({
+                    status: response_1.ResponseStatus.Success,
+                });
+            }
+        }
+        catch (error) {
+            throw error;
+        }
+    });
 })(user = exports.user || (exports.user = {}));
 /** Admin */
 var admin;
 (function (admin) {
-    var _this = this;
-    admin.createPlate = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var payload, user_6, mockPlate, instance, error_5;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    payload = req.body;
-                    return [4 /*yield*/, User.findOne({ where: { id: payload.userId } })];
-                case 1:
-                    user_6 = _a.sent();
-                    mockPlate = {
-                        license: payload.license,
-                    };
-                    return [4 /*yield*/, user_6.createPlate(mockPlate)];
-                case 2:
-                    instance = _a.sent();
-                    res.json({
-                        status: response_1.ResponseStatus.Success,
-                        data: instance.toJson(),
-                    });
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_5 = _a.sent();
-                    throw error_5;
-                case 4: return [2 /*return*/];
+    admin.getCount = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const count = yield Plate.count();
+            res.json({
+                status: response_1.ResponseStatus.Success,
+                data: count,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    admin.getPlate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const plate = yield Plate.findOne({
+                where: { id: req.params.id },
+                attributes: [
+                    'id', 'license',
+                ],
+                include: {
+                    model: User,
+                    attributes: ['username'],
+                },
+            });
+            if (plate == null) {
+                res.json({
+                    status: response_1.ResponseStatus.Failed,
+                    error: 'Plate not Exist !',
+                });
             }
-        });
-    }); };
-    admin.getAllPlates = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var pageSize, page, order, error_6;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    pageSize = +req.query.pageSize;
-                    page = +req.query.page - 1;
-                    return [4 /*yield*/, Plate.findAll((0, models_1.paginate)({ page: page, pageSize: pageSize }))];
-                case 1:
-                    order = _a.sent();
-                    res.json({
-                        status: response_1.ResponseStatus.Success,
-                        data: order,
+            res.json({
+                status: response_1.ResponseStatus.Success,
+                data: plate,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    admin.getAllPlates = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const pageSize = +req.query.pageSize;
+            const page = +req.query.page - 1;
+            const plates = yield Plate.findAll((0, models_1.paginate)({ page: page, pageSize: pageSize }, {
+                attributes: [
+                    'id', 'license',
+                ],
+                include: {
+                    model: User,
+                    attributes: ['username'],
+                },
+            }));
+            res.json({
+                status: response_1.ResponseStatus.Success,
+                data: plates,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    admin.createPlate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const payload = req.body;
+            let userId;
+            if (payload.User) {
+                const user = yield User.findOne({ where: { username: payload.User.username } });
+                if (!user) {
+                    return res.json({
+                        status: response_1.ResponseStatus.Failed,
+                        error: 'User Not Exist!',
                     });
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_6 = _a.sent();
-                    throw error_6;
-                case 3: return [2 /*return*/];
+                }
+                userId = user.id;
             }
-        });
-    }); };
+            const isExist = yield (0, exports.checkPlateIsExist)(payload.license, null);
+            if (isExist) {
+                return res.json({
+                    status: response_1.ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
+            }
+            const created = {
+                license: payload.license,
+                UserId: userId,
+            };
+            yield Plate.create(created);
+            res.json({
+                status: response_1.ResponseStatus.Success,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    admin.updatePlate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const payload = req.body;
+            let userId;
+            if (payload.User) {
+                const user = yield User.findOne({ where: { username: payload.User.username } });
+                if (!user) {
+                    return res.json({
+                        status: response_1.ResponseStatus.Failed,
+                        error: 'User Not Exist!',
+                    });
+                }
+                userId = user.id;
+            }
+            const isExist = yield (0, exports.checkPlateIsExist)(payload.license, +payload.id);
+            if (isExist) {
+                return res.json({
+                    status: response_1.ResponseStatus.Failed,
+                    error: 'Plate License already exist!',
+                });
+            }
+            const updated = {
+                license: payload.license,
+                UserId: userId,
+            };
+            yield Plate.update(updated, { where: { id: req.params.id } });
+            res.json({
+                status: response_1.ResponseStatus.Success,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+    admin.deletePlate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield Plate.destroy({ where: { id: req.params.id } });
+            res.json({
+                status: response_1.ResponseStatus.Success,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
 })(admin = exports.admin || (exports.admin = {}));
