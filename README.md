@@ -1,6 +1,6 @@
 # iparking_backend
 
-## dev log : https://hackmd.io/@FpGviVTqTCmATvhV8Ek1Vg/Sy0VyAURv
+## Dev log : https://hackmd.io/@FpGviVTqTCmATvhV8Ek1Vg/Sy0VyAURv
 
 ### Set enviroment config
     HOST= (Host, for callback url)
