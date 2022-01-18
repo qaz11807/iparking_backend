@@ -2,6 +2,10 @@
 
 ## Dev log : https://hackmd.io/@FpGviVTqTCmATvhV8Ek1Vg/Sy0VyAURv
 
+### Skills
++ Typescipt
++ React
+
 ### Set enviroment config
     HOST= (Host, for callback url)
     SECRET= (password crypt secret)
