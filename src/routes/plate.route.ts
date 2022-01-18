@@ -26,8 +26,8 @@ class PlateRoute extends AuthRoute {
         /** User */
         this.router.get('/', schemaGetter(ValidatorClient.getAll), PlateApi.user.getAllPlates);
         this.router.post('/', schemaGetter(ValidatorClient.create), PlateApi.user.createPlate);
-        this.router.put('/', schemaGetter(ValidatorClient.update), PlateApi.user.updatePlate);
-        this.router.delete('/', schemaGetter(ValidatorClient.delete), PlateApi.user.deletePlate);
+        this.router.put('/:id', schemaGetter(ValidatorClient.update), PlateApi.user.updatePlate);
+        this.router.delete('/:id', schemaGetter(ValidatorClient.delete), PlateApi.user.deletePlate);
     }
 }
 
