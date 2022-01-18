@@ -22,9 +22,12 @@ export namespace user{
         try {
             const user = req.user as UserInstance;
             const pageSize = +req.query.pageSize!;
-            const page = +req.query.page! - 1;
+            const page = +req.query.page!;
             const plates = await user.getPlates(
-                paginate({page: page, pageSize: pageSize}),
+                paginate({
+                    page: page,
+                    pageSize: pageSize,
+                }),
             );
             res.json({
                 status: ResponseStatus.Success,
@@ -69,11 +72,8 @@ export namespace user{
                     error: 'Plate License already exist!',
                 });
             }
-            await user.createPlate({
-                license: license,
-            });
             const plates = await user.getPlates({
-                where: {id: plateId}, raw: true,
+                where: {id: plateId},
             });
             const plate = plates[0];
 
@@ -102,7 +102,7 @@ export namespace user{
             const plateId = req.params.id;
 
             const plates = await user.getPlates({
-                where: {id: plateId}, raw: true,
+                where: {id: plateId},
             });
             const plate = plates[0];
 
@@ -170,7 +170,7 @@ export namespace admin{
     export const getAllPlates = async (req:Request, res:Response) => {
         try {
             const pageSize = +req.query.pageSize!;
-            const page = +req.query.page! - 1;
+            const page = +req.query.page!;
             const plates = await Plate.findAll(
                 paginate({page: page, pageSize: pageSize}, {
                     attributes: [

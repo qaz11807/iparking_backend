@@ -38,7 +38,7 @@ export namespace user {
         try {
             const user = req.user as UserInstance;
             const pageSize = +req.query.pageSize!;
-            const page = +req.query.page! - 1;
+            const page = +req.query.page!;
             const orders = await user.getOrders(
                 paginate({page: page, pageSize: pageSize}, {order: [['id', 'DESC']], include: [Plate]}),
             );
@@ -169,7 +169,7 @@ export namespace admin {
     export const getAllOrders = async (req:Request, res:Response) => {
         try {
             const pageSize = +req.query.pageSize!;
-            const page = +req.query.page! - 1;
+            const page = +req.query.page!;
             const order = await Order.findAll(
                 paginate({page: page, pageSize: pageSize}, {
                     attributes: [

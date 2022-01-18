@@ -34,8 +34,8 @@ interface Pagenation{
     pageSize: number;
 }
 export const paginate = ({page, pageSize} : Pagenation, query?: FindOptions ) => {
-    const limit = pageSize ? pageSize : 10;
-    const offset = page ? (page) * pageSize : 0;
+    const limit = !Number.isNaN(pageSize) ? pageSize : 10;
+    const offset = !Number.isNaN(page) ? (page - 1) * limit : 0;
 
     return {
         ...query,
