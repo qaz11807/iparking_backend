@@ -4,7 +4,9 @@
 
 ### Skills
 + Typescipt
-+ React
++ Node.js
++ Postgresql
++ Sequelize(ORM)
 
 ### Set enviroment config
     HOST= (Host, for callback url)
