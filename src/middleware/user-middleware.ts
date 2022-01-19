@@ -81,7 +81,7 @@ export namespace admin {
     export const getAllUsers = async (req:Request, res:Response) => {
         try {
             const pageSize = +req.query.pageSize!;
-            const page = +req.query.page! - 1;
+            const page = +req.query.page!;
             const user = await User.findAll(
                 paginate({page: page, pageSize: pageSize}, {
                     attributes: [

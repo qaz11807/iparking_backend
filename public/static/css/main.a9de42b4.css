@@ -3083,14 +3083,17 @@ html {
 .absolute {
   position: absolute;
 }
-.bottom-0 {
-  bottom: 0;
-}
 .right-0 {
   right: 0;
 }
+.bottom-0 {
+  bottom: 0;
+}
 .top-0 {
   top: 0;
+}
+.m-4 {
+  margin: 1rem;
 }
 .m-2 {
   margin: 0.5rem;
@@ -3118,46 +3121,43 @@ html {
 .h-screen {
   height: 100vh;
 }
+.h-32 {
+  height: 8rem;
+}
 .h-6 {
   height: 1.5rem;
 }
 .h-8 {
   height: 2rem;
 }
-.h-32 {
-  height: 8rem;
+.h-14 {
+  height: 3.5rem;
 }
 .h-12 {
   height: 3rem;
 }
-.h-14 {
-  height: 3.5rem;
-}
 .w-full {
   width: 100%;
-}
-.w-6 {
-  width: 1.5rem;
 }
 .w-fit {
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
 }
-.w-4 {
-  width: 1rem;
-}
 .w-60 {
   width: 15rem;
+}
+.w-6 {
+  width: 1.5rem;
 }
 .w-8 {
   width: 2rem;
 }
-.w-12 {
-  width: 3rem;
-}
 .w-14 {
   width: 3.5rem;
+}
+.w-12 {
+  width: 3rem;
 }
 .max-w-sm {
   max-width: 24rem;
@@ -3165,11 +3165,11 @@ html {
 .max-w-xs {
   max-width: 20rem;
 }
-.flex-1 {
-  flex: 1 1;
-}
 .flex-none {
   flex: none;
+}
+.flex-1 {
+  flex: 1 1;
 }
 .basis-3\/4 {
   flex-basis: 75%;
@@ -3182,6 +3182,9 @@ html {
 }
 .flex-col {
   flex-direction: column;
+}
+.flex-col-reverse {
+  flex-direction: column-reverse;
 }
 .items-end {
   align-items: flex-end;
@@ -3229,10 +3232,6 @@ html {
 .bg-emerald-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(16 185 129 / var(--tw-bg-opacity));
-}
-.bg-rose-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(244 63 94 / var(--tw-bg-opacity));
 }
 .bg-rose-600 {
   --tw-bg-opacity: 1;
@@ -4164,4 +4163,4 @@ code {
 .react-datepicker__portal .react-datepicker__current-month {
   font-size: 1.44rem;
 }
-/*# sourceMappingURL=main.74481224.css.map*/
+/*# sourceMappingURL=main.a9de42b4.css.map*/
