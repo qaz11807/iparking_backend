@@ -2,6 +2,12 @@
 
 ## Dev log : https://hackmd.io/@FpGviVTqTCmATvhV8Ek1Vg/Sy0VyAURv
 
+### Skills
++ Typescipt
++ Node.js
++ Postgresql
++ Sequelize(ORM)
+
 ### Set enviroment config
     HOST= (Host, for callback url)
     SECRET= (password crypt secret)
